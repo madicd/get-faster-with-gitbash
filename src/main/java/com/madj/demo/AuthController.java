@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.madj.demo.DemoConstants.X_DEMO_AUTHORIZATION_HEADER;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 public class AuthController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
-    private static final String X_DEMO_AUTHORIZATION = "X-Demo-Authorization";
 
     private final UserService userService;
 
@@ -37,7 +37,7 @@ public class AuthController {
         }
 
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(X_DEMO_AUTHORIZATION, tokenService.getToken());
+        responseHeaders.set(X_DEMO_AUTHORIZATION_HEADER, tokenService.getToken());
         ResponseEntity<String> response = new ResponseEntity<>("Santa, you're in!", responseHeaders, HttpStatus.ACCEPTED);
 
         return response;

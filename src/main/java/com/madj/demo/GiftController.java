@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.madj.demo.DemoConstants.X_DEMO_AUTHORIZATION_HEADER;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 public class GiftController {
 
     private static final List<Gift> GIFTS = new ArrayList<>();
-    private static final String X_DEMO_AUTHORIZATION = "X-Demo-Authorization";
 
 
     static {
@@ -47,7 +47,7 @@ public class GiftController {
     }
 
     @RequestMapping(path = "/gifts", method = GET)
-    public ResponseEntity<List<Gift>> getAll(@RequestHeader(X_DEMO_AUTHORIZATION) String token) {
+    public ResponseEntity<List<Gift>> getAll(@RequestHeader(X_DEMO_AUTHORIZATION_HEADER) String token) {
         if (!tokenService.isValid(token)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
