@@ -2,6 +2,7 @@ package com.madj.demo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,18 @@ public class AuthController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
 
+    private final UserService userService;
+
+    @Autowired
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
+
     @RequestMapping(path = "/login", method = POST)
     public ResponseEntity<String> login(@RequestHeader("Authorization") String authHeader) {
-        String[] splitted = authHeader.split(" ");
-        String credentialsBase64 = splitted[1];
+        String credentials = credentialsFromBasicAuthHeader(authHeader);
 
-        if (!"ZHJ1bms6c2FudGE=".equals(credentialsBase64)) {
+        if (!userService.validCredentials(credentials)) {
             return new ResponseEntity<>("Bad credentials!", HttpStatus.BAD_REQUEST);
         }
 
@@ -33,4 +40,10 @@ public class AuthController {
 
         return response;
     }
+
+    private String credentialsFromBasicAuthHeader(@RequestHeader("Authorization") String authHeader) {
+        String[] splitted = authHeader.split(" ");
+        return splitted[1];
+    }
+
 }
