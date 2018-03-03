@@ -16,8 +16,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 public class AuthController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
-
     private final UserService userService;
 
     private final TokenService tokenService;
