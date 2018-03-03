@@ -1,7 +1,10 @@
 package com.madj.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -13,6 +16,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class GiftController {
 
     private static final List<Gift> GIFTS = new ArrayList<>();
+    private static final String X_DEMO_AUTHORIZATION = "X-Demo-Authorization";
+
 
     static {
         GIFTS.add(new Gift("Cotton candies"));
@@ -34,9 +39,18 @@ public class GiftController {
         }
     }
 
-    @RequestMapping(path = "/gifts", method = GET)
-    public List<Gift> getAll() {
-        return GIFTS;
+    private final TokenService tokenService;
+
+    @Autowired
+    public GiftController(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
+    @RequestMapping(path = "/gifts", method = GET)
+    public ResponseEntity<List<Gift>> getAll(@RequestHeader(X_DEMO_AUTHORIZATION) String token) {
+        if (!tokenService.isValid(token)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(GIFTS, HttpStatus.OK);
+    }
 }

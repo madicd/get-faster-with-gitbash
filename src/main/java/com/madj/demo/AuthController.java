@@ -10,20 +10,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 public class AuthController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+    private static final String X_DEMO_AUTHORIZATION = "X-Demo-Authorization";
 
     private final UserService userService;
 
+    private final TokenService tokenService;
+
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, TokenService tokenService) {
         this.userService = userService;
+        this.tokenService = tokenService;
     }
 
     @RequestMapping(path = "/login", method = POST)
@@ -35,7 +37,7 @@ public class AuthController {
         }
 
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("X-Demo-Authorization", UUID.randomUUID().toString());
+        responseHeaders.set(X_DEMO_AUTHORIZATION, tokenService.getToken());
         ResponseEntity<String> response = new ResponseEntity<>("Santa, you're in!", responseHeaders, HttpStatus.ACCEPTED);
 
         return response;
