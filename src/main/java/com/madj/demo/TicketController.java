@@ -1,5 +1,6 @@
 package com.madj.demo;
 
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +41,7 @@ public class TicketController {
     }
 
     @RequestMapping
-    public List<Ticket> getAll() {
+    public List<Ticket> getAll(@RequestHeader(DemoConstants.X_DEMO_AUTHORIZATION) String token) {
         return TICKETS;
     }
 }
