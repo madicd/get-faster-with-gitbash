@@ -40,7 +40,7 @@ public class TicketController {
     }
 
     @RequestMapping
-    public List<Ticket> tickets() {
+    public List<Ticket> getAll() {
         return TICKETS;
     }
 }
